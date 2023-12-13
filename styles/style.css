@@ -6,7 +6,7 @@ body {
 
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: 10vh 85vh 5vh;
+  grid-template-rows: 10vh minmax(85vh, auto) 5vh;
   grid-template-areas:
     "header header header"
     "main main main"
@@ -136,7 +136,7 @@ h1 {
 
 /* MediaQuerys */
 /*Celulares*/
-@media screen and (max-device-width: 575.98px) and (orientation: portrait) {
+@media screen and (max-device-width: 575.98px) and (orientation: landscape) {
   body {
     font-size: 14px;
   }
@@ -144,10 +144,17 @@ h1 {
   .main .lista .int div {
     width: 100%;
   }
+  .main {
+    padding: 10px;
+  }
+
+  .main-index {
+    padding: 10px;
+    }
 }
 
 /*Tablets*/
-@media screen and (min-width: 576px) and (max-width: 767.98px) and (orientation: portrait) {
+@media screen and (min-width: 576px) and (max-width: 767.98px) and (orientation: landscape) {
   body {
     font-size: 16px;
   }
