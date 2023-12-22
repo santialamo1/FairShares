@@ -8,6 +8,15 @@ function agregarDatos() {
   let integrante = integranteInput.value;
   let saldo = parseFloat(saldoInput.value);
 
+  if (integrantes.includes(integrante)) {
+    Swal.fire({
+      title: "Ese nombre ya existe!",
+      text: "Debes ingresar un nombre distinto!",
+      icon: "error"
+    });
+    return;
+  }
+
   if (integrante && !isNaN(saldo)) {
     integrantes.push(integrante);
     saldos.push(saldo);
@@ -18,6 +27,8 @@ function agregarDatos() {
     // Limpiar inputs
     integranteInput.value = "";
     saldoInput.value = "";
+
+    document.getElementById("btn-calcular").disabled = integrantes.length < 2;
   }
 }
 
@@ -28,6 +39,9 @@ function actualizarListas() {
   // Limpiar listas
   integrantesList.innerHTML = "";
   saldosList.innerHTML = "";
+
+  //Si la lista tiene integrantes habilita el boton
+  document.getElementById("btn-calcular").disabled = integrantes.length < 2;
 
   // Actualizar listas con los nuevos datos
   for (let i = 0; i < integrantes.length; i++) {
@@ -113,24 +127,68 @@ function calcular() {
 
   return resultado;
 }
-
-function mostrarResultadoEnInterfaz(resultado) {
-  let resultadoElement = document.getElementById("resultado");
-  resultadoElement.innerHTML =  `<p>Aqui tienes los resultados:</p>
-                                <p>Total: $${resultado.total}</p>
-                                <p>Integrantes: ${
-                                  resultado.cantidadIntegrantes
-                                }</p>
-                                <p>Cada uno debe poner: $${
-                                  resultado.contribucionIndividual
-                                }</p>
-                                <p>Deudas:</p>
-                                <ul>${resultado.deudas
-                                  .map((deuda) => `<li>${deuda}</li>`)
-                                  .join("")}</ul>`;
-  let contenedorResultado = document.querySelector(".resultado");
-  contenedorResultado.style.border = '1px solid black';
-}
+function obtenerTextoResultado(resultado) {
+    return `Aqui tienes los resultados:
+  Total: $${resultado.total}
+  Integrantes: ${resultado.cantidadIntegrantes}
+  Cada uno debe poner: $${resultado.contribucionIndividual}
+  Deudas:
+  ${resultado.deudas.map((deuda) => `- ${deuda}`).join("\n")}`;
+  }
+  
+  function mostrarResultadoEnInterfaz(resultado) {
+    let textoResultados = obtenerTextoResultado(resultado);
+  
+    // Mostrar los resultados en una alerta de SweetAlert
+    Swal.fire({
+      title: "¡Resultados!",
+      text: textoResultados,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Copiar",
+      cancelButtonText: "Cerrar",
+      showCloseButton: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Copiar al portapapeles
+        copiarAlPortapapeles(textoResultados);
+  
+        // Agregar el botón "Compartir por WhatsApp" al SweetAlert de copiar
+        Swal.fire({
+          title: "¡Copiado!",
+          text: "Los resultados han sido copiados al portapapeles.",
+          icon: "success",
+          showDenyButton: true,
+          denyButtonText: "Compartir por WhatsApp"
+        }).then((whatsAppResult) => {
+          if (whatsAppResult.isDenied) {
+            // Compartir por WhatsApp
+            compartirPorWhatsApp(textoResultados);
+          }
+        });
+      }
+    });
+  }
+  
+  // Función para copiar al portapapeles
+  function copiarAlPortapapeles(texto) {
+    let campoTexto = document.createElement("textarea");
+    campoTexto.value = texto;
+    campoTexto.setAttribute("readonly", "");
+    campoTexto.style.position = "absolute";
+    campoTexto.style.left = "-9999px";
+    document.body.appendChild(campoTexto);
+    campoTexto.select();
+    document.execCommand("copy");
+    document.body.removeChild(campoTexto);
+  }
+  
+  // Función para compartir por WhatsApp
+  function compartirPorWhatsApp(texto) {
+    let urlWhatsApp = `https://wa.me/`;
+    window.open(urlWhatsApp, "_blank");
+  }
+document.getElementById("btn-calcular").disabled = integrantes.length < 2;
 
 /* Elimine los onclick de mi html para usar EventListeners */
 document.getElementById("btn-limpiar").addEventListener("click", limpiarLista);

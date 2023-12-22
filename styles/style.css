@@ -146,10 +146,15 @@ h1 {
   }
   .main {
     padding: 10px;
+    overflow: auto;
+    min-height: 100vh;
+    margin-top: 80px;
   }
 
   .main-index {
     padding: 10px;
+    overflow: auto;
+    min-height: 100vh;
     }
 }
 
