@@ -139,7 +139,7 @@ function obtenerTextoResultado(resultado) {
   function mostrarResultadoEnInterfaz(resultado) {
     let textoResultados = obtenerTextoResultado(resultado);
   
-    // Mostrar los resultados en una alerta de SweetAlert
+    // Resultados en una alerta de SweetAlert
     Swal.fire({
       title: "¡Resultados!",
       text: textoResultados,
@@ -153,7 +153,6 @@ function obtenerTextoResultado(resultado) {
         // Copiar al portapapeles
         copiarAlPortapapeles(textoResultados);
   
-        // Agregar el botón "Compartir por WhatsApp" al SweetAlert de copiar
         Swal.fire({
           title: "¡Copiado!",
           text: "Los resultados han sido copiados al portapapeles.",
